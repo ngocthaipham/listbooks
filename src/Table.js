@@ -1,6 +1,17 @@
-import React from 'react';
+import React , {useState, useEffect} from 'react';
 
-const Table = props => (
+const Table = (props) => {
+  const [booksList, setBooksList] = useState([]);
+
+  useEffect(()=>{
+    fetch('http://localhost:3000/books')
+      .then(response => response.json())
+      .then(data => {
+        setBooksList(data);
+      });
+  },[])
+
+  return (
     <table>
       <thead>
         <tr>
@@ -9,8 +20,7 @@ const Table = props => (
         </tr>
       </thead>
       <tbody>
-          {props.books.length > 0 ? (
-              props.books.map(book =>(
+          {booksList.map(book =>(
                 <tr key={book.id}>
                     <td>{book.name}</td>
           <td>
@@ -20,18 +30,14 @@ const Table = props => (
             }}
              className="edit-button">Edit</button>
             <button 
-            onClick={() =>
+            onClick={() => {
                 props.deleteBook(book.id)
-            }
+            }}
             className="delete-button">Delete</button>
           </td>
         </tr>
-              ))) : (
-                  <tr>
-                      <td colSpan={1}>No book</td>
-                  </tr>
-              )}
+              ))}
       </tbody>
     </table>
-  )
+  )}
   export default Table ;
